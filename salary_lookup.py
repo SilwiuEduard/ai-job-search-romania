@@ -12,7 +12,7 @@ instructions on the expected format and how to convert from Excel.
 
 Usage:
     python salary_lookup.py "Company Name"
-    python salary_lookup.py "Company Name" --city "København"
+    python salary_lookup.py "Company Name" --city "București"
     python salary_lookup.py "Company Name" --json
     python salary_lookup.py --list-all
 """
@@ -26,20 +26,29 @@ from pathlib import Path
 
 DATA_FILE = Path(__file__).parent / "salary_data.json"
 
-# Common Danish <-> anglicized spelling variants
+# Common Romanian/Nordic <-> anglicized spelling variants
 SPELLING_VARIANTS = {
     "ø": "o", "æ": "ae", "å": "aa",
     "ö": "o", "ä": "ae", "ü": "u",
+    # Romanian diacritics
+    "ă": "a", "â": "a", "î": "i", "ș": "s", "ț": "t",
+    "Ă": "a", "Â": "a", "Î": "i", "Ș": "s", "Ț": "t",
 }
 
 # Legal suffixes and noise to strip when matching company names
 STRIP_PATTERNS = [
+    # Danish suffixes (kept for compatibility)
     r"\ba/s\b", r"\baps\b", r"\bi/s\b", r"\bp/s\b", r"\bk/s\b",
     r"\bivs\b", r"\bamba\b", r"\ba\.m\.b\.a\.\b",
-    r"\(vg\)", r"\(.*?\)",  # (VG) and other parentheticals
+    # Romanian legal suffixes
+    r"\bs\.r\.l\.\b", r"\bsrl\b", r"\bs\.a\.\b", r"\bsa\b",
+    r"\bra\b", r"\bscs\b", r"\bsns\b", r"\bra\b",
+    r"\bromania\b", r"\bro\b",
+    # General noise
+    r"\(vg\)", r"\(.*?\)",
     r"\bdanmark\b", r"\bdenmark\b", r"\bscandinavia\b", r"\bnordic\b",
     r"\bgroup\b", r"\bholding\b",
-    r",\s*.*$",  # everything after comma (sub-entities)
+    r",\s*.*$",
 ]
 
 
@@ -62,12 +71,12 @@ def normalize(s):
     s = s.lower().strip()
     for pat in STRIP_PATTERNS:
         s = re.sub(pat, "", s)
-    s = re.sub(r"[^a-zæøåöäü0-9]", "", s)
+    s = re.sub(r"[^a-zæøåöäüăâîșț0-9]", "", s)
     return s.strip()
 
 
 def anglicize(s):
-    """Convert Danish/Nordic characters to anglicized equivalents."""
+    """Convert Romanian/Nordic characters to anglicized equivalents."""
     s = s.lower()
     for danish, english in SPELLING_VARIANTS.items():
         s = s.replace(danish, english)

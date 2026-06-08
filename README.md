@@ -62,14 +62,14 @@ La prima compilare, MiKTeX descarcă automat pachetele lipsă.
 ### 1. Fork și clone
 
 ```bash
-gh repo fork SilwiuEduard/ai-job-search --clone
-cd ai-job-search
+gh repo fork SilwiuEduard/ai-job-search-romania --clone
+cd ai-job-search-romania
 ```
 
 Sau direct:
 ```bash
-git clone https://github.com/SilwiuEduard/ai-job-search.git
-cd ai-job-search
+git clone https://github.com/SilwiuEduard/ai-job-search-romania.git
+cd ai-job-search-romania
 ```
 
 ### 2. Configurează profilul
